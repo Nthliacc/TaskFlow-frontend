@@ -67,7 +67,7 @@ const CreateAccount: React.FC = () => {
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? 'Aguarde...' : 'Criar'}
         </Button>
-        <ButtonCreate to="/login">Voltar para o login</ButtonCreate>
+        <ButtonCreate to="/">Voltar para o login</ButtonCreate>
       </Form>
     </Container>
   )
