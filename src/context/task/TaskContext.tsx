@@ -2,13 +2,12 @@ import React, { createContext, useState, ReactNode } from 'react';
 import api from '../../services/api';
 import { Task, TaskContextType, TaskResponse } from './types';
 
+const baseURL = import.meta.env.VITE_BASE_URL + '/tasks'; // Declare the baseURL variable
 export const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
 export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [tasks, setTasks] = useState<TaskResponse[]>([]);
-  const baseURL = '/tasks';
-
-  const handleAPIError = (error: any) => {
+  const handleAPIError = (error: Error) => {
     console.error('Erro ao chamar a API:', error);
   };
 
@@ -27,19 +26,16 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         user: res.data.user || null,
       };
     } catch (error) {
-      handleAPIError(error);
+      handleAPIError(error as Error);
     }
   };
 
   const addTask = (data: Task) => {
     if (!data) return;
 
-    const newTask: TaskResponse = { ...data, id: Math.random().toString() }; 
-    setTasks([...tasks, newTask]);
-
     api.post(baseURL, { data })
       .then(response => {
-        setTasks([...tasks.filter(task => task.id !== newTask.id), response.data]);
+        setTasks([... response.data]);
       })
       .catch(handleAPIError);
   };

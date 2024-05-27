@@ -55,7 +55,15 @@ const InputForm: React.FC = () => {
       return
     }
     try {
-      id ? await putTask({...data, id}) : await addTask(data)
+      id ? await putTask({
+        title: data.title,
+        description: data.description,
+        date: data.date,
+        priority: data.priority,
+        user: data.user,
+        completed: data.completed || false,
+        id: id,
+      }) : await addTask(data)
 
       clearForm()
       navegate('/app')

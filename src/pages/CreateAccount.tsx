@@ -30,7 +30,7 @@ const CreateAccount: React.FC = () => {
       await addUser(data)
       setData({ name: '', email: '', password: '' }) // Limpar campos após o envio bem-sucedido
     } catch (error) {
-      setErrorMessage(error.response?.data?.error || 'Erro ao criar conta. Por favor, tente novamente mais tarde.')
+      setErrorMessage('Erro ao criar conta. Por favor, tente novamente mais tarde.')
     } finally {
       setIsSubmitting(false)
     }

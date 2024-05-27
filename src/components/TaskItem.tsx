@@ -94,7 +94,7 @@ const TaskTag = styled.span<{ priority: PriorityType }>`
   background-color: ${({ theme, priority }) =>
     priority === 'Alta'
       ? theme.colors.danger
-      : priority === 'Média'
+      : priority === 'Media'
       ? theme.colors.warning
       : theme.colors.success};
   padding: 2px 4px;
