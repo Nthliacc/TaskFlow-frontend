@@ -1,45 +1,49 @@
-import React, { createContext, useState, ReactNode } from 'react'
-import { User, UserContextType } from './types'
-import api from '../../services/api'
+import React, { createContext, useState, ReactNode } from 'react';
+import { User, UserContextType } from './types';
+import api from '../../services/api';
 
-const baseURL = import.meta.env.VITE_BASE_URL + '/users'
-
-export const UserContext = createContext<UserContextType | undefined>(undefined)
+export const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [users, setUsers] = useState<User[]>([]);
-  const [error, setError] = useState('')
+  const [error, setError] = useState<string>('');
+
+  const baseURL = import.meta.env.VITE_BASE_URL + '/users';
+
+  const handleAPIError = (error: any) => {
+    console.error('Erro ao chamar a API de usuários:', error);
+    setError('Erro ao realizar operação');
+  };
 
   const fetchUsers = () => {
-    api
-      .get(baseURL + '/')
+    api.get(baseURL + '/')
       .then((response) => setUsers(response.data))
-      .catch((error) => setError(error))
-  }
+      .catch(handleAPIError);
+  };
 
   const addUser = async (data: User) => {
     try {
-      if (!data) return
-      const response = await api.post(baseURL + '/signup', { ...data })
-      setUsers([...users, response.data])
-      setError('')
+      if (!data) throw new Error('Dados de usuário inválidos');
+
+      const response = await api.post(baseURL + '/signup', { ...data });
+      setUsers([...users, response.data]);
+      setError('');
     } catch (error) {
-      setError(error.response.data.message)
+      handleAPIError(error);
     }
-  }
+  };
 
   const deleteUser = (id: string) => {
-    api
-      .delete(`${baseURL}/${id}`)
+    api.delete(`${baseURL}/${id}`)
       .then(() => setUsers(users.filter((item) => item.id !== id)))
-      .catch((error) => setError(error))
-  }
+      .catch(handleAPIError);
+  };
 
   return (
     <UserContext.Provider value={{ users, addUser, deleteUser, fetchUsers, error }}>
       {children}
     </UserContext.Provider>
-  )
-}
+  );
+};

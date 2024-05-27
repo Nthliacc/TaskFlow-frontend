@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import List from '../pages/List'
 import NotFound from '../pages/NotFound'
 import About from '../pages/About'
-import Create from '../pages/CreateOrEdit'
+import Create from '../pages/Create'
 import Edit from '../pages/Edit'
 import Login from '../pages/Login'
 import ProtectedRoute from './ProtectedRoute'
@@ -20,26 +20,26 @@ export default function AppRoutes() {
           <Route path="/" element={<LoginRedirect />} />
           <Route path="/create-account" element={<CreateAccount />} />
           <Route
-            path={`/authentic/`}
+            path={`/app/`}
             element={<ProtectedRoute element={<List />} />}
           />
           <Route
-            path="/authentic/about"
+            path="/app/about"
             element={<ProtectedRoute element={<About />} />}
           />
           <Route
-            path="/authentic/create"
+            path="/app/create"
             element={<ProtectedRoute element={<Create />} />}
           />
           <Route
-            path="/authentic/edit/:id"
+            path="/app/edit/:id"
             element={<ProtectedRoute element={<Edit />} />}
           />
           <Route
-            path="/authentic/logout"
+            path="/app/logout"
             element={<ProtectedRoute element={<Logout />} />}
           />
-          <Route element={<NotFound />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
@@ -51,7 +51,7 @@ const LoginRedirect: React.FC = () => {
   verifyToken()
 
   if (isAuthenticated) {
-    return <Navigate to="/authentic" replace />
+    return <Navigate to="/app" replace />
   }
 
   return <Login />

@@ -8,17 +8,25 @@ import { useAuth } from '../context/auth/useAuth'
 const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const { login, error, setError } = useAuth()
-  const navegate = useNavigate();
-
+  const navigate = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!email || !password) {
       return setError('Preencha todos os campos')
     }
-    login({ email, password })
-    navegate('/authentic/')
+
+    setIsSubmitting(true)
+    try {
+      await login({ email, password })
+      navigate('/app/')
+    } catch (error) {
+      setError('Erro ao fazer login. Por favor, tente novamente mais tarde.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -39,11 +47,11 @@ const Login = () => {
           type="password"
           name="password"
         />
-        <span style={{ color: 'red', margin: 0, fontSize: '12px' }}>
-          {error && error}
-        </span>
-        <Button type="submit"> acessar </Button>
-        <ButtonCreate to="/create-account"> criar uma conta </ButtonCreate>
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Aguarde...' : 'Acessar'}
+        </Button>
+        <ButtonCreate to="/create-account">Criar uma conta</ButtonCreate>
       </Form>
     </Container>
   )
@@ -76,7 +84,12 @@ const ButtonCreate = styled(Link)`
   text-decoration: none;
 
   &:hover {
-    /* color: ${(props) => props.theme.colors.primary}; */
     background: ${(props) => props.theme.colors.secondary};
   }
+`
+
+const ErrorMessage = styled.span`
+  color: red;
+  margin: 0;
+  font-size: 12px;
 `

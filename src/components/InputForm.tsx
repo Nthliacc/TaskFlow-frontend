@@ -11,6 +11,9 @@ import { useUsers } from '../context/user/useUsers'
 
 const InputForm: React.FC = () => {
   const { id } = useParams()
+  const navegate = useNavigate()
+  const { fetchTaskId, addTask, putTask } = useTasks()
+  const { users, fetchUsers } = useUsers()
 
   const [data, setData] = useState<Task>({
     title: '',
@@ -19,9 +22,7 @@ const InputForm: React.FC = () => {
     priority: 'Baixa',
     user: null,
   })
-  const { fetchTaskId, addTask, putTask } = useTasks()
-  const { users, fetchUsers } = useUsers()
-  // const navegate = useNavigate()
+
   useEffect(() => {
     fetchUsers()
     if (id) {
@@ -47,17 +48,17 @@ const InputForm: React.FC = () => {
       user: null,
     })
   }
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!data.title || !data.description || !data.priority) {
       alert('Preencha todos os campos')
       return
     }
     try {
-      id ? putTask({...data, id}) : addTask(data)
+      id ? await putTask({...data, id}) : await addTask(data)
 
       clearForm()
-      // navegate('/authentic')
+      navegate('/app')
     } catch (error) {
       console.error(error)
     }

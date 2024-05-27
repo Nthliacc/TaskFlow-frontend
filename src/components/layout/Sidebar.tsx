@@ -28,9 +28,9 @@ const Sidebar: React.FC = () => {
   return (
     <SidebarContainer>
       <h2>✔️</h2>
-      <SidebarItem href="/authentic/">List</SidebarItem>
-      <SidebarItem href="/authentic/about">About</SidebarItem>
-      <SidebarItem href="/authentic/logout">Logout</SidebarItem>
+      <SidebarItem href="/app/">List</SidebarItem>
+      <SidebarItem href="/app/about">About</SidebarItem>
+      <SidebarItem href="/app/logout">Logout</SidebarItem>
     </SidebarContainer>
   )
 }

@@ -1,160 +1,133 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
-import { Task, TaskResponse, PriorityType } from '../context/task/types'
+import { TaskResponse, PriorityType } from '../context/task/types'
 import Icon from './common/Icon'
 import { Link } from 'react-router-dom'
 
 interface TaskItemProps {
   task: TaskResponse
-  onComplete: (id: Task['id']) => void
+  onComplete: (id: string) => void
 }
 
 const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete }) => {
-  const [showDescription, setShowDescription] = React.useState(false)
-  const date = task.date ? new Date(task.date).toLocaleDateString() : ''
+  const [showDescription, setShowDescription] = useState(false)
 
-  const ElementDescription = () => {
-    const descriptionLength = task.description.length > 380 ? true : false
-    const description = !showDescription
-      ? task.description.slice(0, 380) + '...'
-      : task.description
-
-    return (
-      <Description>
-        {description}
-        {descriptionLength && (
-          <ButtonSeeMoreLess
-            onClick={() => setShowDescription(!showDescription)}
-          >
-            {showDescription ? 'ver menos' : 'ver mais'}
-          </ButtonSeeMoreLess>
-        )}
-      </Description>
-    )
+  const toggleDescription = () => {
+    setShowDescription(!showDescription)
   }
 
   return (
-    <TaskItemContainer
-      completed={task.completed}
-      descriptionLength={showDescription}
-    >
-      <Item>
-        <CheckBox
-          type="checkbox"
-          checked={task.completed ? true : false}
-          onChange={() => onComplete(task.id)}
-        />
-        <TextBox>
-          <Title completed={task.completed}>
-            {task.title} <DateItem>{date}</DateItem>{' '}
-            <Tag status={task.priority}>{task.priority}</Tag>
-          </Title>
-          <ElementDescription />
-        </TextBox>
-      </Item>
-      <Actions>
-        <EditButton as={Link} to={`/authentic/edit/${task.id}`}>
+    <TaskItemContainer completed={task.completed} showDescription={showDescription}>
+      <Checkbox
+        type="checkbox"
+        checked={task.completed}
+        onChange={() => onComplete(task.id)}
+      />
+      <TaskDetails>
+        <TaskHeader completed={task.completed}>
+          <TaskTitle>{task.title}</TaskTitle>
+          <TaskDate>{task.date ? new Date(task.date).toLocaleDateString() : ''}</TaskDate>
+          <TaskTag priority={task.priority}>{task.priority}</TaskTag>
+        </TaskHeader>
+        <TaskDescription showDescription={showDescription}>
+          {task.description}
+        </TaskDescription>
+        {task.description.length > 380 && (
+          <ToggleDescriptionButton onClick={toggleDescription}>
+            {showDescription ? 'Ver Menos' : 'Ver Mais'}
+          </ToggleDescriptionButton>
+        )}
+      </TaskDetails>
+      <TaskActions>
+        <EditLink to={`/app/edit/${task.id}`}>
           <Icon name="edit" />
-        </EditButton>
-        <DeleteButton as={Link} to="/authentic/delete">
+        </EditLink>
+        <DeleteButton as={Link} to={`/app/delete/${task.id}`}>
           <Icon name="delete" />
         </DeleteButton>
-      </Actions>
+      </TaskActions>
     </TaskItemContainer>
   )
 }
 
-const TaskItemContainer = styled.div<{
-  completed: boolean
-  descriptionLength: boolean
-}>`
+const TaskItemContainer = styled.div<{ completed: boolean; showDescription: boolean }>`
   opacity: ${({ completed }) => (completed ? 0.5 : 1)};
   display: flex;
   justify-content: space-between;
-  align-items: start;
+  align-items: flex-start;
   padding: 8px;
   gap: 8px;
   border-bottom: 1px solid #ccc;
-  height: ${({ descriptionLength }) => (!descriptionLength ? '100px' : 'auto')};
-
   border-radius: 4px;
   background-color: #fff;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
 `
 
-const Item = styled.div`
-  display: flex;
-  align-items: start;
-  gap: 8px;
-  width: 100%;
-`
-const DateItem = styled.span`
-  font-size: 12px;
-  color: #666;
-  padding-left: 10px;
-  align-self: end;
-`
-
-const Tag = styled.span<{ status: PriorityType }>`
-  font-size: 12px;
-  color: white;
-  background-color: ${({ theme, status }) =>
-    status === 'Alta'
-      ? theme.colors.danger
-      : status === 'Media'
-        ? theme.colors.warning
-        : theme.colors.success};
-  padding: 2px 4px;
-  border-radius: 2px;
-  align-self: end;
-`
-
-const CheckBox = styled.input`
+const Checkbox = styled.input`
   cursor: pointer;
 `
-const TextBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
+
+const TaskDetails = styled.div`
+  flex: 1;
 `
 
-const Title = styled.span<{ completed: boolean }>`
+const TaskHeader = styled.div<{ completed: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 8px;
   text-decoration: ${({ completed }) => (completed ? 'line-through' : 'none')};
+`
+
+const TaskTitle = styled.span`
   font-size: 16px;
-  width: 100%;
   font-weight: 600;
 `
 
-const Description = styled.p`
+const TaskDate = styled.span`
+  font-size: 12px;
+  color: #666;
+`
+
+const TaskTag = styled.span<{ priority: PriorityType }>`
+  font-size: 12px;
+  color: white;
+  background-color: ${({ theme, priority }) =>
+    priority === 'Alta'
+      ? theme.colors.danger
+      : priority === 'Média'
+      ? theme.colors.warning
+      : theme.colors.success};
+  padding: 2px 4px;
+  border-radius: 2px;
+`
+
+const TaskDescription = styled.p<{ showDescription: boolean }>`
   font-size: 14px;
   color: #666;
-  width: 100%;
+  max-height: ${({ showDescription }) => (showDescription ? 'none' : '80px')};
+  overflow: hidden;
 `
-const ButtonSeeMoreLess = styled.span`
-  margin-left: 10px;
-  background-color: transparent;
-  border: none;
-  color: ${({ theme }) => theme.colors.secondary};
-  cursor: pointer;
-  font-size: 14px;
 
-  &:hover {
-    color: ${({ theme }) => theme.colors.primary};
-  }
+const ToggleDescriptionButton = styled.span`
+  cursor: pointer;
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: 14px;
 `
-const Actions = styled.div`
+
+const TaskActions = styled.div`
   display: flex;
   gap: 10px;
 `
 
-const EditButton = styled.button`
-  background-color: ${(props) => props.theme.colors.tertiary};
+const EditLink = styled(Link)`
+  background-color: ${({ theme }) => theme.colors.tertiary};
   color: white;
   border: none;
   border-radius: 2px;
   padding: 8px;
   cursor: pointer;
   opacity: 0.7;
+  text-decoration: none;
 
   &:hover {
     opacity: 1;
@@ -162,7 +135,7 @@ const EditButton = styled.button`
 `
 
 const DeleteButton = styled.button`
-  background-color: ${(props) => props.theme.colors.danger};
+  background-color: ${({ theme }) => theme.colors.danger};
   color: white;
   border: none;
   border-radius: 2px;

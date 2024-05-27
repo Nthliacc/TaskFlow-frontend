@@ -25,7 +25,7 @@ const List: React.FC = () => {
     <Container>
       <Header>
         <Title>Lista de tarefas</Title>
-        <Button title="Nova tarefa" as={Link} to="/authentic/create" >
+        <Button title="Nova tarefa" as={Link} to="/app/create" >
           Nova tarefa
         </Button>
       </Header>

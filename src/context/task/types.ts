@@ -29,9 +29,9 @@ export interface TaskContextType {
   fetchTasks: () => void
   fetchTaskId: (id: TaskResponse['id']) => Promise<TaskResponse>
   addTask: (task: Task) => void
-  updateTask: (id: Task['id']) => void
-  putTask: (task: Task) => void
-  deleteTask: (id: Task['id']) => void
+  updateTask: (id: string) => void
+  putTask: (task: TaskResponse) => void
+  deleteTask: (id: string) => void
 }
 
 export type PriorityType = "Baixa" | "Media" | "Alta"

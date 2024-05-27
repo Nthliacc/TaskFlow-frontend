@@ -13,35 +13,32 @@ const CreateAccount: React.FC = () => {
   })
   const [errorMessage, setErrorMessage] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const { addUser, error } = useUsers()
-  //   const navegate = useNavigate()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { addUser } = useUsers()
   const { name, email, password } = data
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const { email, password, name } = data
-    if (!email || !password || !name) {
+
+    if (!name || !email || !password) {
       return setErrorMessage('Preencha todos os campos')
     }
-    addUser(data)
 
-    if (!error) {
-      return setErrorMessage(error)
-   
-    // setData({
-    //   name: '',
-    //   email: '',
-    //   password: '',
-    // })
-    // navegate('/authentic/') 
-}
-    console.log(error)
-    setErrorMessage(error ? error : 'Conta criada com sucesso')
+    setIsSubmitting(true)
+    setErrorMessage('') // Limpar mensagem de erro ao enviar
+    try {
+      await addUser(data)
+      setData({ name: '', email: '', password: '' }) // Limpar campos após o envio bem-sucedido
+    } catch (error) {
+      setErrorMessage(error.response?.data?.error || 'Erro ao criar conta. Por favor, tente novamente mais tarde.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
     <Container>
-      <h1>criando sua conta</h1>
+      <h1>Criando sua conta</h1>
       <Form onSubmit={handleSubmit}>
         <InputLabel
           label="Name"
@@ -66,11 +63,11 @@ const CreateAccount: React.FC = () => {
           onFocus={() => setShowPassword(true)}
           onBlur={() => setShowPassword(false)}
         />
-        <span style={{ color: 'red', margin: 0, fontSize: '12px' }}>
-          {errorMessage && errorMessage}
-        </span>
-        <Button type="submit"> criar </Button>
-        <ButtonCreate to="/login"> voltar para o login </ButtonCreate>
+        <ErrorMessage>{errorMessage}</ErrorMessage>
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Aguarde...' : 'Criar'}
+        </Button>
+        <ButtonCreate to="/login">Voltar para o login</ButtonCreate>
       </Form>
     </Container>
   )
@@ -103,7 +100,12 @@ const ButtonCreate = styled(Link)`
   text-decoration: none;
 
   &:hover {
-    /* color: ${(props) => props.theme.colors.primary}; */
     background: ${(props) => props.theme.colors.secondary};
   }
+`
+
+const ErrorMessage = styled.span`
+  color: red;
+  margin: 0;
+  font-size: 12px;
 `
