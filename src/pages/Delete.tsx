@@ -42,7 +42,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete }) => {
         <EditLink to={`/app/edit/${task.id}`}>
           <Icon name="edit" />
         </EditLink>
-        <DeleteButton as={Link} to={`/app/delete/${task.id}`}>
+        <DeleteButton onClick={() => alert('Delete action')}>
           <Icon name="delete" />
         </DeleteButton>
       </TaskActions>
