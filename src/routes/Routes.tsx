@@ -11,6 +11,7 @@ import { AuthProvider } from '../context/auth/AuthContext'
 import Logout from '../pages/Logout'
 import { useAuth } from '../context/auth/useAuth'
 import CreateAccount from '../pages/CreateAccount'
+import Delete from '../pages/Delete'
 
 export default function AppRoutes() {
   return (
@@ -20,7 +21,7 @@ export default function AppRoutes() {
           <Route path="/" element={<LoginRedirect />} />
           <Route path="/create-account" element={<CreateAccount />} />
           <Route
-            path={`/app/`}
+            path={`/app/list`}
             element={<ProtectedRoute element={<List />} />}
           />
           <Route
@@ -34,6 +35,10 @@ export default function AppRoutes() {
           <Route
             path="/app/edit/:id"
             element={<ProtectedRoute element={<Edit />} />}
+          />
+          <Route
+            path="/app/delete/:id"
+            element={<ProtectedRoute element={<Delete />} />}
           />
           <Route
             path="/app/logout"
@@ -51,7 +56,7 @@ const LoginRedirect: React.FC = () => {
   verifyToken()
 
   if (isAuthenticated) {
-    return <Navigate to="/app" replace />
+    return <Navigate to="/app/list" replace />
   }
 
   return <Login />

@@ -1,11 +1,15 @@
 import Button from '../components/common/Button'
 
 const Logout = () => {
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+  }
+
   return (
     <div>
       <h1>Logout</h1>
       <p>Até logo!</p>
-      <Button onClick={() => localStorage.removeItem('token')}>Sair</Button>
+      <Button onClick={handleLogout}>Sair</Button>
     </div>
   )
 }

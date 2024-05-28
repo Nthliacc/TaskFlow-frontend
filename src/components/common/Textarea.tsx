@@ -28,10 +28,10 @@ const StyledTextarea = styled.textarea`
   padding: 10px;
   min-height: 60px;
   border-radius: 4px;
-  border: 1px solid ${(props) => props.theme.colors.secondary};
+  border: 1px solid ${(props) => props.theme.colors.primary};
   outline: none;
   &:focus {
-    border-color: ${(props) => props.theme.colors.primary};
+    border-color: ${(props) => props.theme.colors.secondary};
   }
 `
 const Error = styled.span`

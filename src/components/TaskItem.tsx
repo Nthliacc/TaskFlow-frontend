@@ -92,9 +92,9 @@ const TaskTag = styled.span<{ priority: PriorityType }>`
   font-size: 12px;
   color: white;
   background-color: ${({ theme, priority }) =>
-    priority === 'Alta'
+    priority == 'alta'
       ? theme.colors.danger
-      : priority == 'Média'
+      : priority == 'media'
       ? theme.colors.warning
       : theme.colors.success};
   padding: 2px 4px;

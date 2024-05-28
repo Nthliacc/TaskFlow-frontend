@@ -38,10 +38,10 @@ const Label = styled.label`
 const StyledSelect = styled.select`
   padding: 10px;
   border-radius: 4px;
-  border: 1px solid ${(props) => props.theme.colors.secondary};
+  border: 1px solid ${(props) => props.theme.colors.primary};
   outline: none;
   &:focus {
-    border-color: ${(props) => props.theme.colors.primary};
+    border-color: ${(props) => props.theme.colors.secondary};
   }
 `
 export default Select

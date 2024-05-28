@@ -19,7 +19,7 @@ const InputForm: React.FC = () => {
     title: '',
     description: '',
     date: null,
-    priority: 'Baixa',
+    priority: '',
     user: null,
   })
 
@@ -27,7 +27,6 @@ const InputForm: React.FC = () => {
     fetchUsers()
     if (id) {
       fetchTaskId(id).then((task) => {
-        console.log(task.priority)
         setData({
           title: task.title,
           description: task.description,
@@ -44,7 +43,7 @@ const InputForm: React.FC = () => {
       title: '',
       description: '',
       date: null,
-      priority: 'Baixa',
+      priority: '',
       user: null,
     })
   }
@@ -66,7 +65,7 @@ const InputForm: React.FC = () => {
       }) : await addTask(data)
 
       clearForm()
-      navegate('/app')
+      // navegate('/app')
     } catch (error) {
       console.error(error)
     }
@@ -118,8 +117,8 @@ const InputForm: React.FC = () => {
             label: 'Alta',
           },
         ]}
-        defaultValue={data?.priority || 'baixa'}
-        value={data?.priority}
+        defaultValue={data?.priority || ''}
+        value={data?.priority || ''}
         onChange={(event) =>
           setData({
             ...data,
@@ -159,7 +158,7 @@ const InputForm: React.FC = () => {
           label: user.name,
         }))}
         defaultValue={String(data?.user?.id) || ''}
-        value={data?.user?.name}
+        value={data?.user?.name || ''}
         onChange={(event) =>
           setData({
             ...data,
@@ -174,6 +173,10 @@ const InputForm: React.FC = () => {
       <Button type="submit" title="adicionar">
         adicionar
       </Button>
+      <Button type="button" title="Cancelar" onClick={() => navegate('/app')} secondary>
+        voltar
+      </Button>
+
     </FormContainer>
   )
 }

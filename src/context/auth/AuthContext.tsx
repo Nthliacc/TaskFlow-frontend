@@ -1,8 +1,6 @@
-import React, { createContext, useState, ReactNode, useEffect, useCallback } from 'react';
-import axios from 'axios';
+import React, { createContext, useState, ReactNode, useCallback } from 'react';
 import { AuthContextType } from './types';
-
-const baseURL = import.meta.env.VITE_BASE_URL;
+import api from '../../services/api';
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -11,20 +9,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [error, setError] = useState<string | null>(null);
   const token = localStorage.getItem('token');
 
+  console.log(isAuthenticated)
+
   const verifyToken = useCallback(async () => {
     if (!token) {
       setIsAuthenticated(false);
       return;
     }
     try {
-      const res = await axios.get(`${baseURL}/auth/verify`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await api.get(`/auth/verify`);
       if (res.status === 200) {
         setIsAuthenticated(true);
-      } else {
+      } 
+      else {
         localStorage.removeItem('token');
         setIsAuthenticated(false);
       }
@@ -32,11 +29,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       localStorage.removeItem('token');
       setIsAuthenticated(false);
     }
-  }, [token]);
+  }, [isAuthenticated]); // eslint-disable-line
 
   const login = useCallback(async ({ email, password }: { email: string; password: string; }) => {
     try {
-      const response = await axios.post(`${baseURL}/auth/login`, {
+      const response = await api.post(`/auth/login`, {
         email,
         password,
       });
@@ -54,10 +51,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsAuthenticated(false);
     localStorage.removeItem('token');
   }, []);
-
-  useEffect(() => {
-    verifyToken();
-  }, [verifyToken]);
 
   return (
     <AuthContext.Provider

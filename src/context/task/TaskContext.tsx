@@ -2,7 +2,6 @@ import React, { createContext, useState, ReactNode } from 'react';
 import api from '../../services/api';
 import { Task, TaskContextType, TaskResponse } from './types';
 
-const baseURL = import.meta.env.VITE_BASE_URL + '/tasks'; // Declare the baseURL variable
 export const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
 export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -11,15 +10,15 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     console.error('Erro ao chamar a API:', error);
   };
 
-  const fetchTasks = () => {
-    api.get(baseURL)
+  const fetchTasks = async () => {
+    await api.get('/tasks')
       .then(response => setTasks(response.data))
       .catch(handleAPIError);
   };
 
   const fetchTaskId = async (id: TaskResponse['id']) => {
     try {
-      const res = await api.get(`${baseURL}/${id}`);
+      const res = await api.get(`/tasks/${id}`);
       return {
         ...res.data,
         date: res.data.date || null,
@@ -33,7 +32,7 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const addTask = (data: Task) => {
     if (!data) return;
 
-    api.post(baseURL, { data })
+    api.post('/tasks/', { ...data })
       .then(response => {
         setTasks([... response.data]);
       })
@@ -47,7 +46,7 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const updatedTask: TaskResponse = { ...taskToUpdate, completed: !taskToUpdate.completed };
     setTasks(tasks.map(task => (task.id === id ? updatedTask : task)));
 
-    api.put(`${baseURL}/${id}`, { ...updatedTask })
+    api.put(`/tasks/${id}`, { ...updatedTask })
       .then(response => {
         setTasks(tasks.map(task => (task.id === id ? response.data : task)));
       })
@@ -59,7 +58,7 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     setTasks(tasks.map(task => (task.id === data.id ? data : task)));
 
-    api.put(`${baseURL}/${data.id}`, { ...data })
+    api.put(`/tasks/${data.id}`, { ...data })
       .then(response => {
         setTasks(tasks.map(task => (task.id === data.id ? response.data : task)));
       })
@@ -69,7 +68,7 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const deleteTask = (id: string) => {
     setTasks(tasks.filter(task => task.id !== id));
 
-    api.delete(`${baseURL}/${id}`)
+    api.delete(`/tasks/${id}`)
       .catch(handleAPIError);
   };
 

@@ -10,15 +10,13 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
   const [users, setUsers] = useState<User[]>([]);
   const [error, setError] = useState<string>('');
 
-  const baseURL = import.meta.env.VITE_BASE_URL + '/users';
-
-  const handleAPIError = (error: any) => {
+  const handleAPIError = (error: Error) => {
     console.error('Erro ao chamar a API de usuários:', error);
     setError('Erro ao realizar operação');
   };
 
   const fetchUsers = () => {
-    api.get(baseURL + '/')
+    api.get('/users')
       .then((response) => setUsers(response.data))
       .catch(handleAPIError);
   };
@@ -27,16 +25,16 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
     try {
       if (!data) throw new Error('Dados de usuário inválidos');
 
-      const response = await api.post(baseURL + '/signup', { ...data });
+      const response = await api.post('/users/signup', { ...data });
       setUsers([...users, response.data]);
       setError('');
     } catch (error) {
-      handleAPIError(error);
+      handleAPIError(error as Error);
     }
   };
 
   const deleteUser = (id: string) => {
-    api.delete(`${baseURL}/${id}`)
+    api.delete(`/users/${id}`)
       .then(() => setUsers(users.filter((item) => item.id !== id)))
       .catch(handleAPIError);
   };

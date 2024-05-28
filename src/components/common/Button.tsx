@@ -1,9 +1,12 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components';
 
-const Button = styled.button`
-  background-color: ${(props) => props.theme.colors.success};
-  border: none;
-  color: white;
+interface ButtonProps {
+  secondary?: boolean;
+  danger?: boolean;
+  disabled?: boolean;
+}
+
+const Button = styled.button<ButtonProps>`
   padding: 16px 32px;
   text-align: center;
   text-decoration: none;
@@ -12,10 +15,25 @@ const Button = styled.button`
   margin: 4px 2px;
   cursor: pointer;
   border-radius: 2px;
+  border: none;
 
+  background-color: ${(props) => props.theme.colors.primary};
+  color: white;
+  
+  ${(props) => props.secondary && css`
+    background-color: ${(props) => props.theme.colors.secondary};
+  `}
+  ${(props) => props.danger && css`
+    background-color: ${(props) => props.theme.colors.danger};
+  `}
+  ${(props) => props.disabled && css`
+    background-color: gray;
+    cursor: not-allowed;
+  `}
+  
   &:hover {
     opacity: 0.8;
   }
-`
+`;
 
-export default Button
+export default Button;

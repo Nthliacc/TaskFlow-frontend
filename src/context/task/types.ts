@@ -34,4 +34,4 @@ export interface TaskContextType {
   deleteTask: (id: string) => void
 }
 
-export type PriorityType = "Baixa" | "Média" | "Alta"
+export type PriorityType = "baixa" | "media" | "alta" | ""

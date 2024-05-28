@@ -21,7 +21,7 @@ const Login = () => {
     setIsSubmitting(true)
     try {
       await login({ email, password })
-      navigate('/app/')
+      navigate('/app/list')
     } catch (error) {
       setError('Erro ao fazer login. Por favor, tente novamente mais tarde.')
     } finally {

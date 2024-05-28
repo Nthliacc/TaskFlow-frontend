@@ -18,7 +18,8 @@ interface MainLayoutProps {
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated } = useAuth();
+  
   return (
     <Container>
       {isAuthenticated && <Sidebar />}
